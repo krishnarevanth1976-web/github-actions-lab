@@ -1,0 +1,25 @@
+name: Build Docker Image
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "Dockerfile"
+      - "calculator.py"
+      - ".github/workflows/docker-build.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t github-actions-lab .
+
+      - name: Test the container
+        run: |
+          result=$(docker run --rm github-actions-lab)
+          echo "Container output: $result"
+          test "$result" = "5"
